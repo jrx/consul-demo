@@ -1,0 +1,44 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: productpage-to-details
+  namespace: default
+spec:
+  destination:
+    name: details
+    namespace: default
+  sources:
+    - name: productpage
+      namespace: default
+      action: allow
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: productpage-to-reviews
+  namespace: default
+spec:
+  destination:
+    name: reviews
+    namespace: default
+  sources:
+    - name: productpage
+      namespace: default
+      action: allow
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: productpage-to-ratings
+  namespace: default
+spec:
+  destination:
+    name: ratings
+    namespace: default
+  sources:
+    - name: productpage
+      namespace: default
+      action: allow
+    - name: reviews
+      namespace: default
+      action: allow
