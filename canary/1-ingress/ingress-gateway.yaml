@@ -1,0 +1,26 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: IngressGateway
+metadata:
+  name: ingress-gateway
+spec:
+  listeners:
+    - port: 8080
+      protocol: http
+      services:
+        - name: webapp
+          namespace: default
+          hosts: ["*"]
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: ingress-gateway-to-webapp
+  namespace: default
+spec:
+  destination:
+    name: webapp
+    namespace: default
+  sources:
+    - name: ingress-gateway
+      namespace: default
+      action: allow

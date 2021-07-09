@@ -1,0 +1,32 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ProxyDefaults
+metadata:
+  name: global
+spec:
+  meshGateway:
+    mode: 'local'
+  config:
+    protocol: 'http'
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: webapp
+  namespace: default
+spec:
+  protocol: 'http'
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceResolver
+metadata:
+  name: webapp
+  namespace: default
+spec:
+  defaultSubset: 'v1'
+  subsets:
+    'v1':
+      filter: 'Service.Meta.version == v1'
+    'v2':
+      filter: 'Service.Meta.version == v2'
+    'v3':
+      filter: 'Service.Meta.version == v3'

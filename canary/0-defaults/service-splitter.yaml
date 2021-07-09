@@ -1,0 +1,19 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceSplitter
+metadata:
+  name: webapp
+  namespace: default
+spec:
+  splits:
+    - weight: 0
+      service: webapp
+      namespace: default
+      serviceSubset: v1
+    - weight: 50
+      service: webapp
+      namespace: default
+      serviceSubset: v2
+    - weight: 50
+      service: webapp
+      namespace: default
+      serviceSubset: v3

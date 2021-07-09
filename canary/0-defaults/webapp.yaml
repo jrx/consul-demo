@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+spec:
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webapp
+  labels:
+    account: webapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-v1
+  labels:
+    app: webapp
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: v1
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/service-meta-version: "v1"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "20200"
+    spec:
+      containers:
+        # This name will be the service name in Consul.
+        - name: webapp
+          image: hashicorp/http-echo:latest
+          args:
+            - -text="{'version':'v1'}"
+            - -listen=:8080
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      # If ACLs are enabled, the serviceAccountName must match the Consul service name.
+      serviceAccountName: webapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-v2
+  labels:
+    app: webapp
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: v2
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/service-meta-version: "v2"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "20200"
+    spec:
+      containers:
+        # This name will be the service name in Consul.
+        - name: webapp
+          image: hashicorp/http-echo:latest
+          args:
+            - -text="{'version':'v2'}"
+            - -listen=:8080
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      # If ACLs are enabled, the serviceAccountName must match the Consul service name.
+      serviceAccountName: webapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-v3
+  labels:
+    app: webapp
+    version: v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: v3
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/service-meta-version: "v3"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "20200"
+    spec:
+      containers:
+        # This name will be the service name in Consul.
+        - name: webapp
+          image: hashicorp/http-echo:latest
+          args:
+            - -text="{'version':'v3'}"
+            - -listen=:8080
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      # If ACLs are enabled, the serviceAccountName must match the Consul service name.
+      serviceAccountName: webapp

@@ -1,0 +1,16 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: webapp
+  namespace: default
+spec:
+  routes:
+    - match:
+        http:
+          header:
+            - name: x-version
+              exact: '3'
+      destination:
+        service: webapp
+        namespace: default
+        serviceSubset: v3

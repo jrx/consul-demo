@@ -1,4 +1,14 @@
 apiVersion: consul.hashicorp.com/v1alpha1
+kind: ProxyDefaults
+metadata:
+  name: global
+spec:
+  meshGateway:
+    mode: 'local'
+  config:
+    protocol: 'http'
+---
+apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: reviews
@@ -10,14 +20,6 @@ apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
   name: details
-  namespace: default
-spec:
-  protocol: 'http'
----
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: bookinfo
   namespace: default
 spec:
   protocol: 'http'
