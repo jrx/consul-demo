@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wait-for-sidecar
+  labels:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+    app: wait-for-sidecar
+  ports:
+    - protocol: TCP
+      name: web
+      port: 8080
+      targetPort: 8080
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wait-for-sidecar
+  labels:
+    account: wait-for-sidecar
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wait-for-sidecar-v1
+  labels:
+    app: wait-for-sidecar
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wait-for-sidecar
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: wait-for-sidecar
+        version: v1
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/service-meta-version: "v1"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "20200"
+    spec:
+      containers:
+        # This name will be the service name in Consul.
+        - name: wait-for-sidecar
+          image: python:3
+          command: ["/bin/sh"]
+          args: ["-c", "until curl --head localhost:19000/ready; do echo 'Waiting for Sidecar'; sleep 1 ; done ; echo 'Sidecar available'; echo 'hello!' > index.html && python -m http.server 8080" ]
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      # If ACLs are enabled, the serviceAccountName must match the Consul service name.
+      serviceAccountName: wait-for-sidecar
