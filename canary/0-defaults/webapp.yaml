@@ -2,13 +2,20 @@ apiVersion: v1
 kind: Service
 metadata:
   name: webapp
+  labels:
+    prometheus.io/scrape: "true"
 spec:
   selector:
     app: webapp
   ports:
     - protocol: TCP
+      name: http
       port: 8080
       targetPort: 8080
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200
 ---
 apiVersion: v1
 kind: ServiceAccount
