@@ -1,0 +1,26 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: backend
+spec:
+  destination:
+    name: backend
+  sources:
+  - name: frontend
+    action: allow
+    partition: eks-red
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ExportedServices
+metadata:
+  name: eks-blue
+spec:
+  services:
+  - name: mesh-gateway
+    consumers:
+    - partition: eks-red
+  - name: backend
+    namespace: default
+    consumers:
+    - partition: eks-red

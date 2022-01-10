@@ -1,0 +1,9 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ExportedServices
+metadata:
+  name: eks-red
+spec:
+  services:
+  - name: mesh-gateway
+    consumers:
+    - partition: eks-blue
