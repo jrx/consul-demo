@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul-mesh-gateway-metrics
+  labels:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+      app: consul
+      component: mesh-gateway
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul-ingress-gateway-metrics
+  labels:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+      app: consul
+      component: ingress-gateway
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul-terminating-gateway-metrics
+  labels:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+      app: consul
+      component: terminating-gateway
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200

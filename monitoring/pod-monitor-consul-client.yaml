@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    monitoring: prometheus
+  name: consul-client
+  namespace: monitoring
+spec:
+  podMetricsEndpoints:
+    - bearerTokenSecret:  
+        key: token 
+        name: consul-read-agent-token
+      interval: 10s
+      params:
+        format: ['prometheus']
+      path: /v1/agent/metrics
+      port: https
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+        #caFile: /etc/prometheus/secrets/vault-tls/ca.crt
+        #certFile: /etc/prometheus/secrets/vault-tls/server.crt
+        #keyFile: /etc/prometheus/secrets/vault-tls/server.key
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: consul
+      component: client
