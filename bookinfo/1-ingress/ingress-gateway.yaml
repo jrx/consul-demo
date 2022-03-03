@@ -9,7 +9,8 @@ spec:
       services:
         - name: productpage
           namespace: default
-          hosts: ["*"]
+        - name: test
+          namespace: default
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
