@@ -18,7 +18,11 @@ export CONSUL_HTTP_SSL_VERIFY=false
 export CONSUL_HTTP_TOKEN=$(kubectl get secrets/consul-bootstrap-acl-token --template={{.data.token}} | base64 -d)
 
 # set partition
-export CONSUL_PARTITION=default
+export CONSUL_PARTITION=eks-blue
+export CONSUL_NAMESPACE=external
+
+# create namespace
+consul namespace create -name $CONSUL_NAMESPACE -partition $CONSUL_PARTITION
 ```
 
 ## Register External Service
@@ -36,6 +40,7 @@ cat > /tmp/external.json <<EOF
   "Service": {
     "ID": "example-https",
     "Service": "example-https",
+    "Namespace": "$CONSUL_NAMESPACE",
     "Port": 443
   }
 }
@@ -58,13 +63,17 @@ curl --request GET \
 
 ```json
 cat > /tmp/write-policy.hcl <<EOF
-service "example-https" {
-  policy = "write"
+namespace "external" {
+  service "example-https" {
+    policy = "write"
+  }
 }
 EOF
 ```
 
 ```sh
+export CONSUL_NAMESPACE=default
+
 consul acl policy create \
   -name "example-https-write-policy" \
   -rules @/tmp/write-policy.hcl
@@ -98,7 +107,8 @@ kubectl exec deploy/static-client \
 # delete
 cat > /tmp/external.json <<EOF
 {
-  "Node": "legacy_node"
+  "Node": "legacy_node",
+  "Partition": "$CONSUL_PARTITION"
 }
 EOF
 

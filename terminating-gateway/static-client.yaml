@@ -5,8 +5,10 @@ metadata:
 spec:
   destination:
     name: example-https
+    namespace: external
   sources:
     - name: static-client
+      namespace: default
       action: allow
 ---
 apiVersion: v1
@@ -40,7 +42,7 @@ spec:
         app: static-client
       annotations:
         'consul.hashicorp.com/connect-inject': 'true'
-        'consul.hashicorp.com/connect-service-upstreams': 'example-https:1234'
+        'consul.hashicorp.com/connect-service-upstreams': 'example-https.external:1234'
     spec:
       containers:
         # This name will be the service name in Consul.
