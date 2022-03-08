@@ -16,14 +16,18 @@ export CONSUL_HTTP_SSL_VERIFY=false
 
 # retrieve bootstrap token
 export CONSUL_HTTP_TOKEN=$(kubectl get secrets/consul-bootstrap-acl-token --template={{.data.token}} | base64 -d)
+
+# set partition
+export CONSUL_PARTITION=default
 ```
 
 ## Register External Service
 
-```yaml
+```sh
 cat > /tmp/external.json <<EOF
 {
   "Node": "legacy_node",
+  "Partition": "$CONSUL_PARTITION",
   "Address": "example.com",
   "NodeMeta": {
     "external-node": "true",
@@ -39,9 +43,15 @@ EOF
 ```
 
 ```sh
+# create
 curl --request PUT \
   --header "X-Consul-Token: $CONSUL_HTTP_TOKEN" \
   --data @/tmp/external.json -k $CONSUL_HTTP_ADDR/v1/catalog/register
+
+# list
+curl --request GET \
+  --header "X-Consul-Token: $CONSUL_HTTP_TOKEN" \
+  -k $CONSUL_HTTP_ADDR/v1/catalog/nodes | jq .
 ```
 
 ## Update ACL Token
@@ -80,4 +90,19 @@ kubectl apply -f ./terminating-gateway/
 kubectl rollout status deploy static-client --watch
 kubectl exec deploy/static-client \
   -- curl -vvvs -H "Host: example.com" http://localhost:1234/
+```
+
+## Clean-Up
+
+```sh
+# delete
+cat > /tmp/external.json <<EOF
+{
+  "Node": "legacy_node"
+}
+EOF
+
+curl --request PUT \
+  --header "X-Consul-Token: $CONSUL_HTTP_TOKEN" \
+  --data @/tmp/external.json -k $CONSUL_HTTP_ADDR/v1/catalog/deregister
 ```
