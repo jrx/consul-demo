@@ -19,18 +19,18 @@ spec:
   sources:
   - name: frontend
     action: allow
-    partition: eks-red
+    partition: default
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ExportedServices
 metadata:
-  name: eks-blue
+  name: eks-red
 spec:
   services:
   - name: mesh-gateway
     consumers:
-    - partition: eks-red
+    - partition: default
   - name: backend
     namespace: default
     consumers:
-    - partition: eks-red
+    - partition: default

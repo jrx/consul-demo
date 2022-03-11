@@ -1,0 +1,11 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: backend-tp
+spec:
+  destination:
+    name: backend-tp
+  sources:
+  - name: frontend-tp
+    action: allow

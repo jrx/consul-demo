@@ -1,60 +1,55 @@
-# Service to expose frontend
+# Service to expose backend-tp
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: backend-tp
 spec:
   selector:
-    app: frontend
+    app: backend-tp
   ports:
   - name: http
     protocol: TCP
-    port: 9090
-    targetPort: 9090
+    port: 9091
+    targetPort: 9091
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: frontend
+  name: backend-tp
 ---
-# frontend
+# deployment for backend-tp
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: backend-tp
   labels:
-    app: frontend
+    app: backend-tp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: backend-tp
   template:
     metadata:
       labels:
-        app: frontend
+        app: backend-tp
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
-        "consul.hashicorp.com/transparent-proxy": "false"
-        "consul.hashicorp.com/connect-service-upstreams": "backend.default.eks-blue:9091"
+        "consul.hashicorp.com/transparent-proxy": "true"
     spec:
-      serviceAccountName: frontend
+      serviceAccountName: backend-tp
       containers:
-      - name: frontend
+      - name: backend-tp
         image: nicholasjackson/fake-service:v0.22.4
         ports:
-        - containerPort: 9090
+        - containerPort: 9091
         env:
         - name: "LISTEN_ADDR"
-          value: "0.0.0.0:9090"
-        - name: "UPSTREAM_URIS"
-          value: "http://localhost:9091"
+          value: "0.0.0.0:9091"
         - name: "NAME"
-          value: "frontend"
+          value: "backend-tp"
         - name: "MESSAGE"
-          value: "Hello World"
-        - name: "HTTP_CLIENT_KEEP_ALIVES"
-          value: "false"
+          value: "Response from backend-tp"
         resources:
           requests:
             memory: "64Mi"
@@ -66,6 +61,13 @@ spec:
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: frontend
+  name: backend-tp
 spec:
   protocol: "http"
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceResolver
+metadata:
+  name: backend-tp
+spec:
+  connectTimeout: 10s
