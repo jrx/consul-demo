@@ -1,0 +1,71 @@
+# Service to expose fake-service-a
+apiVersion: v1
+kind: Service
+metadata:
+  name: fake-service-a
+spec:
+  selector:
+    app: fake-service-a
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fake-service-a
+---
+# fake-service-a
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-service-a
+  labels:
+    app: fake-service-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fake-service-a
+  template:
+    metadata:
+      labels:
+        app: fake-service-a
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/transparent-proxy": "false"
+        "consul.hashicorp.com/connect-service-upstreams": "cowsay.cowsay:9091:dc1"
+    spec:
+      serviceAccountName: fake-service-a
+      containers:
+      - name: fake-service-a
+        image: nicholasjackson/fake-service:v0.22.4
+        ports:
+        - containerPort: 9090
+        env:
+        - name: "LISTEN_ADDR"
+          value: "0.0.0.0:9090"
+        - name: "UPSTREAM_URIS"
+          value: "http://localhost:9091"
+        - name: "NAME"
+          value: "fake-service-a"
+        - name: "MESSAGE"
+          value: "Hello World"
+        - name: "HTTP_CLIENT_KEEP_ALIVES"
+          value: "false"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: fake-service-a
+spec:
+  protocol: "http"
