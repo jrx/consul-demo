@@ -1,0 +1,16 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: reviews
+  namespace: default
+spec:
+  routes:
+    - match:
+        http:
+          header:
+            - name: end-user
+              exact: jan
+      destination:
+        service: reviews
+        namespace: default
+        serviceSubset: v3
