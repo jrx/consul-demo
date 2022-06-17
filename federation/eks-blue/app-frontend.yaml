@@ -1,11 +1,11 @@
-# Service to expose fake-service-a
+# Service to expose bar
 apiVersion: v1
 kind: Service
 metadata:
-  name: fake-service-a
+  name: bar
 spec:
   selector:
-    app: fake-service-a
+    app: bar
   ports:
   - name: http
     protocol: TCP
@@ -15,32 +15,32 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: fake-service-a
+  name: bar
 ---
-# fake-service-a
+# bar
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fake-service-a
+  name: bar
   labels:
-    app: fake-service-a
+    app: bar
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fake-service-a
+      app: bar
   template:
     metadata:
       labels:
-        app: fake-service-a
+        app: bar
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
         "consul.hashicorp.com/transparent-proxy": "false"
-        "consul.hashicorp.com/connect-service-upstreams": "cowsay.cowsay:9091:dc1"
+        "consul.hashicorp.com/connect-service-upstreams": "foo.foo:9091:dc1"
     spec:
-      serviceAccountName: fake-service-a
+      serviceAccountName: bar
       containers:
-      - name: fake-service-a
+      - name: bar
         image: nicholasjackson/fake-service:v0.22.4
         ports:
         - containerPort: 9090
@@ -50,7 +50,7 @@ spec:
         - name: "UPSTREAM_URIS"
           value: "http://localhost:9091"
         - name: "NAME"
-          value: "fake-service-a"
+          value: "bar"
         - name: "MESSAGE"
           value: "Hello World"
         - name: "HTTP_CLIENT_KEEP_ALIVES"
@@ -66,6 +66,6 @@ spec:
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: fake-service-a
+  name: bar
 spec:
   protocol: "http"

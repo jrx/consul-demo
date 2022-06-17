@@ -1,11 +1,11 @@
-# Service to expose cowsay
+# Service to expose foo
 apiVersion: v1
 kind: Service
 metadata:
-  name: cowsay
+  name: foo
 spec:
   selector:
-    app: cowsay
+    app: foo
   ports:
   - name: http
     protocol: TCP
@@ -15,31 +15,31 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cowsay
+  name: foo
 ---
-# deployment for cowsay
+# deployment for foo
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cowsay
+  name: foo
   labels:
-    app: cowsay
+    app: foo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cowsay
+      app: foo
   template:
     metadata:
       labels:
-        app: cowsay
+        app: foo
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
         "consul.hashicorp.com/transparent-proxy": "true"
     spec:
-      serviceAccountName: cowsay
+      serviceAccountName: foo
       containers:
-      - name: cowsay
+      - name: foo
         image: nicholasjackson/fake-service:v0.22.4
         ports:
         - containerPort: 9091
@@ -47,9 +47,9 @@ spec:
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:9091"
         - name: "NAME"
-          value: "cowsay"
+          value: "foo"
         - name: "MESSAGE"
-          value: "Response from cowsay-nebula"
+          value: "Response from foo-dc2"
         resources:
           requests:
             memory: "64Mi"
@@ -61,13 +61,13 @@ spec:
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: cowsay
+  name: foo
 spec:
   protocol: "http"
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceResolver
 metadata:
-  name: cowsay
+  name: foo
 spec:
   connectTimeout: 10s
