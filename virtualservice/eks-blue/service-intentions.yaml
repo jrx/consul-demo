@@ -1,0 +1,11 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: bar-to-foo-dc2
+spec:
+  destination:
+    name: foo-dc2
+  sources:
+    - name: bar
+      action: allow
