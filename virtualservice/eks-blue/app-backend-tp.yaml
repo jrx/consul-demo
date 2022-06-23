@@ -1,0 +1,79 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: foo-dc2
+spec:
+  protocol: "http"
+---
+# Service to expose foo
+apiVersion: v1
+kind: Service
+metadata:
+  name: foo-dc2
+spec:
+  selector:
+    app: foo-dc2
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9091
+    targetPort: 9091
+---
+# deployment for foo
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foo-dc2
+  labels:
+    app: foo-dc2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo-dc2
+  template:
+    metadata:
+      labels:
+        app: foo-dc2
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/transparent-proxy": "true"
+    spec:
+      serviceAccountName: foo-dc2
+      containers:
+      - name: foo-dc2
+        image: nicholasjackson/fake-service:v0.22.4
+        ports:
+        - containerPort: 9091
+        env:
+        - name: "LISTEN_ADDR"
+          value: "0.0.0.0:9091"
+        - name: "NAME"
+          value: "foo-dc2"
+        - name: "MESSAGE"
+          value: "Response from dc1, should not be visible!!"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: foo-dc2
+  labels:
+    account: foo-dc2
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceResolver
+metadata:
+  name: foo-dc2
+spec:
+  connectTimeout: 0s
+  redirect:
+    service: foo
+    datacenter: dc2

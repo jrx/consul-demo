@@ -5,17 +5,20 @@ metadata:
   name: foo-dc2
 spec:
   protocol: "http"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: foo-dc2
-spec:
-  ports:
-  - name: http
-    protocol: TCP
-    port: 9091
-    targetPort: 9091
+# ---
+# # Service to expose foo
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: foo-dc2
+# spec:
+#   selector:
+#     app: foo-dc2
+#   ports:
+#   - name: http
+#     protocol: TCP
+#     port: 9091
+#     targetPort: 9091
 ---
 apiVersion: v1
 kind: ServiceAccount
