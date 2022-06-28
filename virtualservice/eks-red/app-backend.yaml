@@ -1,11 +1,11 @@
-# Service to expose foo
+# Service to expose bar
 apiVersion: v1
 kind: Service
 metadata:
-  name: foo
+  name: bar
 spec:
   selector:
-    app: foo
+    app: bar
   ports:
   - name: http
     protocol: TCP
@@ -15,31 +15,31 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: foo
+  name: bar
 ---
-# deployment for foo
+# deployment for bar
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: foo
+  name: bar
   labels:
-    app: foo
+    app: bar
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: foo
+      app: bar
   template:
     metadata:
       labels:
-        app: foo
+        app: bar
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
         "consul.hashicorp.com/transparent-proxy": "true"
     spec:
-      serviceAccountName: foo
+      serviceAccountName: bar
       containers:
-      - name: foo
+      - name: bar
         image: nicholasjackson/fake-service:v0.22.4
         ports:
         - containerPort: 9091
@@ -47,9 +47,9 @@ spec:
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:9091"
         - name: "NAME"
-          value: "foo"
+          value: "bar"
         - name: "MESSAGE"
-          value: "Response from foo-dc2"
+          value: "Response from bar-dc2"
         resources:
           requests:
             memory: "64Mi"
@@ -61,16 +61,16 @@ spec:
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: foo
+  name: bar
 spec:
   protocol: "http"
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceResolver
 metadata:
-  name: foo
+  name: bar
 spec:
   connectTimeout: 0s
   redirect:
-    service: foo
+    service: bar
     datacenter: dc2

@@ -2,37 +2,16 @@
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: foo-dc2
+  name: bar-dc2
 spec:
   protocol: "http"
-# ---
-# # Service to expose foo
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: foo-dc2
-# spec:
-#   selector:
-#     app: foo-dc2
-#   ports:
-#   - name: http
-#     protocol: TCP
-#     port: 9091
-#     targetPort: 9091
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: foo-dc2
-  labels:
-    account: foo-dc2
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceResolver
 metadata:
-  name: foo-dc2
+  name: bar-dc2
 spec:
   connectTimeout: 0s
   redirect:
-    service: foo
+    service: bar
     datacenter: dc2

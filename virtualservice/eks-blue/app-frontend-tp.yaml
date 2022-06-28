@@ -1,11 +1,11 @@
-# Service to expose bar
+# Service to expose foo
 apiVersion: v1
 kind: Service
 metadata:
-  name: bar
+  name: foo
 spec:
   selector:
-    app: bar
+    app: foo
   ports:
   - name: http
     protocol: TCP
@@ -15,31 +15,31 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: bar
+  name: foo
 ---
-# bar
+# foo
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bar
+  name: foo
   labels:
-    app: bar
+    app: foo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bar
+      app: foo
   template:
     metadata:
       labels:
-        app: bar
+        app: foo
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
         "consul.hashicorp.com/transparent-proxy": "true"
     spec:
-      serviceAccountName: bar
+      serviceAccountName: foo
       containers:
-      - name: bar
+      - name: foo
         image: nicholasjackson/fake-service:v0.22.4
         ports:
         - containerPort: 9090
@@ -47,9 +47,9 @@ spec:
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:9090"
         - name: "UPSTREAM_URIS"
-          value: "http://foo-dc2:9091"
+          value: "http://bar-dc2:9091"
         - name: "NAME"
-          value: "bar"
+          value: "foo"
         - name: "MESSAGE"
           value: "Hello World"
         - name: "HTTP_CLIENT_KEEP_ALIVES"
@@ -65,6 +65,6 @@ spec:
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceDefaults
 metadata:
-  name: bar
+  name: foo
 spec:
   protocol: "http"
