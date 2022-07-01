@@ -3,6 +3,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: bird-frontend
+  labels:
+    prometheus.io/scrape: "true"
 spec:
   selector:
     app: bird-frontend
@@ -11,6 +13,10 @@ spec:
     protocol: TCP
     port: 6060
     targetPort: 6060
+  - name: metrics
+    protocol: TCP
+    port: 20200
+    targetPort: 20200
 ---
 apiVersion: v1
 kind: ServiceAccount
