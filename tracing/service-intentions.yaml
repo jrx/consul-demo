@@ -1,0 +1,22 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: bird-backend
+spec:
+  destination:
+    name: bird-backend
+  sources:
+  - name: bird-frontend
+    action: allow
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: bird-frontend
+spec:
+  destination:
+    name: bird-frontend
+  sources:
+  - name: ingress-gateway
+    action: allow
