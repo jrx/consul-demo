@@ -1,0 +1,10 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: bird-backend
+spec:
+  routes:
+    - destination:
+        numRetries: 10
+        retryOnStatusCodes: [503]
+        requestTimeout: "2s"
