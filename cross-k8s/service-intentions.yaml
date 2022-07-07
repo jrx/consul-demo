@@ -1,0 +1,14 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: backend-tp
+  namespace: default
+spec:
+  destination:
+    name: backend-tp
+    namespace: eks-red-default
+  sources:
+  - name: frontend-tp
+    namespace: eks-blue-default
+    action: allow
