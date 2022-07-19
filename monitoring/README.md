@@ -35,7 +35,7 @@ kubectl port-forward service/consul-server 8501:8501
 
 cd ~/test/consul/src/consul-demo/
 
-export CONSUL_HTTP_TOKEN=$(kubectl get secrets/consul-bootstrap-acl-token --template={{.data.token}} | base64 -d)
+export CONSUL_HTTP_TOKEN=$(kubectl get secrets/consul-bootstrap-acl-token --template={{.data.token}} --namespace consul | base64 -d)
 export CONSUL_HTTP_ADDR=https://127.0.0.1:8501
 export CONSUL_HTTP_SSL_VERIFY=false
 

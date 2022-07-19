@@ -12,7 +12,7 @@ spec:
     port: http
   namespaceSelector:
     matchNames:
-    - default
+    - vault
   selector:
     matchLabels:
       app.kubernetes.io/name: vault

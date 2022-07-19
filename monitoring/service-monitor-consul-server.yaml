@@ -23,7 +23,7 @@ spec:
         #keyFile: /etc/prometheus/secrets/vault-tls/server.key
   namespaceSelector:
     matchNames:
-      - default
+      - consul
   selector:
     matchLabels:
       app: consul

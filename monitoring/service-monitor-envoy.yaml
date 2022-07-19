@@ -13,6 +13,7 @@ spec:
   namespaceSelector:
     matchNames:
       - default
+      - consul
   selector:
     matchLabels:
       prometheus.io/scrape: "true"
