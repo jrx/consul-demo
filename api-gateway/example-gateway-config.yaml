@@ -1,0 +1,34 @@
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: GatewayClass
+metadata:
+  name: example-gateway-class
+  namespace: default
+spec:
+  controllerName: 'hashicorp.com/consul-api-gateway-controller'
+  parametersRef:
+    group: api-gateway.consul.hashicorp.com
+    kind: GatewayClassConfig
+    name: example-gateway-class-config
+  description: example gateways class configurations
+---
+apiVersion: api-gateway.consul.hashicorp.com/v1alpha1
+kind: GatewayClassConfig
+metadata:
+  name: example-gateway-class-config
+  namespace: default
+spec:
+  logLevel: info
+  serviceType: LoadBalancer
+  consul:
+    authentication:
+      managed: true
+      method: consul-k8s-auth-method
+    scheme: https
+    ports:
+      http: 8501
+      grpc: 8502
+  deployment:
+    defaultInstances: 1
+    maxInstances: 8
+    minInstances: 1
