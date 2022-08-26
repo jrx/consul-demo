@@ -1,0 +1,65 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: test-allow
+spec:
+  protocol: 'http'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-allow
+  labels:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+    app: test-allow
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: 20200
+      targetPort: 20200
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test-allow
+  labels:
+    account: test-allow
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-allow
+  labels:
+    app: test-allow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-allow
+  template:
+    metadata:
+      labels:
+        app: test-allow
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/transparent-proxy: "false"
+        consul.hashicorp.com/connect-service-upstreams: "webapp:8080"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "20200"
+    spec:
+      containers:
+        - name: test-allow
+          image: rockylinux:9
+          command: [ "/bin/bash", "-c", "--" ]
+          args: [ "while true; do curl -s 'http://localhost:8080' ; sleep 5; done" ]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      serviceAccountName: test-allow
