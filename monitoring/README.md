@@ -28,10 +28,10 @@ kubectl --namespace monitoring port-forward svc/alertmanager-main 9093
 kubectl delete --ignore-not-found=true -f manifests/ -f manifests/setup
 ```
 
-## Create Consul Token fro Prometheus
+## Create Consul Token for Prometheus
 
 ```sh
-kubectl port-forward service/consul-server 8501:8501
+kubectl port-forward service/consul-server 8501:8501 --namespace consul
 
 cd ~/test/consul/src/consul-demo/
 
