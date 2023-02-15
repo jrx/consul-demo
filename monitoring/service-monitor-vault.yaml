@@ -9,7 +9,13 @@ spec:
   endpoints:
   - interval: 10s
     path: /v1/sys/metrics
-    port: http
+    port: https
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+      #caFile: /etc/prometheus/secrets/vault-tls/ca.crt
+      #certFile: /etc/prometheus/secrets/vault-tls/server.crt
+      #keyFile: /etc/prometheus/secrets/vault-tls/server.key
   namespaceSelector:
     matchNames:
     - vault
