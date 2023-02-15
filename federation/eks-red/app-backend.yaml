@@ -35,7 +35,7 @@ spec:
         app: foo
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
-        "consul.hashicorp.com/transparent-proxy": "true"
+        "consul.hashicorp.com/transparent-proxy": "false"
     spec:
       serviceAccountName: foo
       containers:

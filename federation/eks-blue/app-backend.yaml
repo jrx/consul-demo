@@ -36,7 +36,7 @@ spec:
         app: foo
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
-        "consul.hashicorp.com/transparent-proxy": "true"
+        "consul.hashicorp.com/transparent-proxy": "false"
     spec:
       serviceAccountName: foo
       containers:
@@ -77,4 +77,4 @@ spec:
       service: foo
       namespace: foo
       datacenters:
-       - dc2
+       - hcp-consul-beta-secondary

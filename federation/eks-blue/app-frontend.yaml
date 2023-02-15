@@ -36,7 +36,7 @@ spec:
       annotations:
         "consul.hashicorp.com/connect-inject": "true"
         "consul.hashicorp.com/transparent-proxy": "false"
-        "consul.hashicorp.com/connect-service-upstreams": "foo.foo:9091:dc1"
+        "consul.hashicorp.com/connect-service-upstreams": "foo.foo:9091:hcp-consul-beta"
     spec:
       serviceAccountName: bar
       containers:

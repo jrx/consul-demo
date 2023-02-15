@@ -9,8 +9,6 @@ cd ~/test/consul/src/consul-demo
 kubectl apply -f federation/eks-blue/service-default.yaml --context eks-blue
 kubectl apply -f federation/eks-red/service-default.yaml --context eks-red
 
-# intentions
-kubectl apply -f federation/eks-blue/service-intentions.yaml --context eks-blue
 ```
 
 > We have a service "foo" in namespace "foo" in datacenter "dc1"
@@ -25,6 +23,9 @@ kubectl apply -f federation/eks-blue/app-backend.yaml --namespace foo --context 
 ```sh
 kubectl create namespace bar --context eks-blue
 kubectl apply -f federation/eks-blue/app-frontend.yaml --namespace bar --context eks-blue
+
+# intentions
+kubectl apply -f federation/eks-blue/service-intentions.yaml --context eks-blue
 
 kubectl port-forward service/bar 9090:9090 --namespace bar --context eks-blue
 ```
